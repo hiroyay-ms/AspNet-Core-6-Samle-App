@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Dapr.AspNetCore;
+using Dapr.Client;
 
 using Web3.Models;
 
@@ -24,18 +24,13 @@ public class PolicyHolderController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var endpointUrl = string.Format("{0}/{1}", _configuration.GetValue<string>("Endpoint"), "PolicyHolder");
-
-        HttpClient client = _daprClient.CreateInvokeHttpClient();
+        var application_id = _configuration.GetValue<string>("DaprId");
+        HttpClient client = DaprClient.CreateInvokeHttpClient(application_id);
 
         List<PolicyHolder> policyHolders = null;
 
-        if (response.IsSuccessStatusCode)
-        {
-            var jsonString = await client.GetStringAsync(endpointUrl);
-
-            policyHolders = JsonSerializer.Deserialize<List<PolicyHolder>>(jsonString);
-        }
+        var jsonString = await client.GetStringAsync("/PolicyHolder");
+        policyHolders = JsonSerializer.Deserialize<List<PolicyHolder>>(jsonString);
 
         return View(policyHolders);
     }
@@ -43,18 +38,13 @@ public class PolicyHolderController : Controller
     [HttpGet]
     public async Task<IActionResult> GetDetails(int Id)
     {
-        var endpointUrl = string.Format("{0}/{1}/{2}", _configuration.GetValue<string>("Endpoint"), "PolicyHolder", Id);
-
-        HttpClient client = _daprClient.CreateInvokeHttpClient();
+        var application_id = _configuration.GetValue<string>("DaprId");
+        HttpClient client = DaprClient.CreateInvokeHttpClient(application_id);
 
         PolicyHolder policyHolder = new PolicyHolder();
 
-        if (response.IsSuccessStatusCode)
-        {
-            var jsonString = await client.GetStringAsync(endpointUrl);
-
-            policyHolder = JsonSerializer.Deserialize<PolicyHolder>(jsonString);
-        }
+        var jsonString = await client.GetStringAsync("/PolicyHolder");
+        policyHolder = JsonSerializer.Deserialize<PolicyHolder>(jsonString);
 
         return View(policyHolder);
     }
