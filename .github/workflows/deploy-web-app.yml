@@ -2,6 +2,13 @@ name: Deploy to Web App
 
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        type: choice
+        description: デプロイ スロット
+        options:
+        - Production
+        - Staging
 
 env:
   APP_PATH: './src/Web2'
