@@ -3,36 +3,36 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using Dapr.AspNetCore;
 
-using Web1.Models;
+using Web3.Models;
 
-namespace  Web1.Controllers;
+namespace  Web3.Controllers;
 
 public class PolicyHolderController : Controller
 {
     private readonly ILogger<PolicyHolderController> _logger;
     private readonly IConfiguration _configuration;
-    private readonly IHttpClientFactory _clientFactory;
+    private readonly DaprClient _daprClient;
 
-    public PolicyHolderController(ILogger<PolicyHolderController> logger, IConfiguration configuration, IHttpClientFactory clientFactory)
+    public PolicyHolderController(ILogger<PolicyHolderController> logger, IConfiguration configuration, DaprClient daprClient)
     {
         _logger = logger;
         _configuration = configuration;
-        _clientFactory = clientFactory;
+        _daprClient = daprClient;
     }
 
     public async Task<IActionResult> Index()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, _configuration.GetValue<string>("Endpoint") + "/PolicyHolder");
+        var endpointUrl = string.Format("{0}/{1}", _configuration.GetValue<string>("Endpoint"), "PolicyHolder");
 
-        HttpClient client = _clientFactory.CreateClient();
-        HttpResponseMessage response = await client.SendAsync(request);
+        HttpClient client = _daprClient.CreateInvokeHttpClient();
 
         List<PolicyHolder> policyHolders = null;
 
         if (response.IsSuccessStatusCode)
         {
-            var jsonString = await response.Content.ReadAsStringAsync();
+            var jsonString = await client.GetStringAsync(endpointUrl);
 
             policyHolders = JsonSerializer.Deserialize<List<PolicyHolder>>(jsonString);
         }
@@ -44,16 +44,14 @@ public class PolicyHolderController : Controller
     public async Task<IActionResult> GetDetails(int Id)
     {
         var endpointUrl = string.Format("{0}/{1}/{2}", _configuration.GetValue<string>("Endpoint"), "PolicyHolder", Id);
-        var request = new HttpRequestMessage(HttpMethod.Get, endpointUrl);
 
-        HttpClient client = _clientFactory.CreateClient();
-        HttpResponseMessage response = await client.SendAsync(request);
+        HttpClient client = _daprClient.CreateInvokeHttpClient();
 
         PolicyHolder policyHolder = new PolicyHolder();
 
         if (response.IsSuccessStatusCode)
         {
-            var jsonString = await response.Content.ReadAsStringAsync();
+            var jsonString = await client.GetStringAsync(endpointUrl);
 
             policyHolder = JsonSerializer.Deserialize<PolicyHolder>(jsonString);
         }
