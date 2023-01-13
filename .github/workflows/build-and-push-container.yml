@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: .net-api
-          path: ${{ env.APP_PATH }}/myapi
+          path: ${{ env.API_PATH }}/myapi
 
   push-api:
     runs-on: ubuntu-latest
