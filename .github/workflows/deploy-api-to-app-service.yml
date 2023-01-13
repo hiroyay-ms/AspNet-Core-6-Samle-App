@@ -35,24 +35,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
 
-    steps:
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    environment:
+      name: Api-Production
+      url: https://app-tosakin.azurewebsites.net/swagger/
 
-      - name: Download artifact from build jobs
+    steps:
+      - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: .net-app
-      
-      - name: Deploy to Web app
-        id: deploy-to-webAppName
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapi
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'app-tosakin'
-          slot-name: 'Production'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
           package: .
-      
-      - name: logout
-        run: |
-          az logout
