@@ -37,7 +37,7 @@ jobs:
 
     environment:
       name: Api-Production
-      url: https://app-tosakin.azurewebsites.net/swagger/
+      url: https://app-tosakin.azurewebsites.net/PolicyHolder
 
     steps:
       - name: Download artifact from build job
