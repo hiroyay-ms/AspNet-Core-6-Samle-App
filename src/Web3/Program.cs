@@ -2,7 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddControlers().AddDapr();
+builder.Services.AddDaprClient();
 
 var app = builder.Build();
 
