@@ -8,7 +8,7 @@
             "name": ".NET Core Launch (web)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-mvc",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/Web1/bin/Debug/net6.0/Web1.dll",
             "args": [],
@@ -21,7 +21,7 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URL": "http://localhost:5000"
+                "ASPNETCORE_URLS": "http://localhost:5000"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
@@ -34,11 +34,11 @@
             "name": ".NET Core Launch (api)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-api",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/Api/bin/Debug/net6.0/Api.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Web1",
+            "cwd": "${workspaceFolder}/src/Api",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
@@ -47,7 +47,7 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URL": "http://localhost:5001"
+                "ASPNETCORE_URLS": "http://localhost:5001"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
@@ -61,7 +61,7 @@
     ],
     "compounds": [
         {
-            "name": "Compound",
+            "name": "AspNetCore6App",
             "configurations": [
                 ".NET Core Launch (api)",
                 ".NET Core Launch (web)"
