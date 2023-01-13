@@ -3,4 +3,4 @@ WORKDIR /app
 
 COPY ./release .
 
-ENTRYPOINT ["dotnet", "Web1.dll"]
+ENTRYPOINT ["dotnet", "Web3.dll"]
