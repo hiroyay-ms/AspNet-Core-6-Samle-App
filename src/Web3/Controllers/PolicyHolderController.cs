@@ -25,12 +25,18 @@ public class PolicyHolderController : Controller
     public async Task<IActionResult> Index()
     {
         var application_id = _configuration.GetValue<string>("DaprId");
-        HttpClient client = DaprClient.CreateInvokeHttpClient(application_id);
+
+        var result = _daprClient.CreateInvokeMethodRequest(HttpMethod.Get, application_id, "PolicyHolder");
+        HttpResponseMessage response = await _daprClient.InvokeMethodWithResponseAsync(result);
 
         List<PolicyHolder> policyHolders = null;
 
-        var jsonString = await client.GetStringAsync("/PolicyHolder");
-        policyHolders = JsonSerializer.Deserialize<List<PolicyHolder>>(jsonString);
+        if (response.IsSuccessStatusCode)
+        {
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            policyHolders = JsonSerializer.Deserialize<List<PolicyHolder>>(jsonString);
+        }
 
         return View(policyHolders);
     }
@@ -39,12 +45,18 @@ public class PolicyHolderController : Controller
     public async Task<IActionResult> GetDetails(int Id)
     {
         var application_id = _configuration.GetValue<string>("DaprId");
-        HttpClient client = DaprClient.CreateInvokeHttpClient(application_id);
+
+        var result = _daprClient.CreateInvokeMethodRequest(HttpMethod.Get, application_id, $"PolicyHolder/{Id}");
+        HttpResponseMessage response = await _daprClient.InvokeMethodWithResponseAsync(result);
 
         PolicyHolder policyHolder = new PolicyHolder();
 
-        var jsonString = await client.GetStringAsync("/PolicyHolder");
-        policyHolder = JsonSerializer.Deserialize<PolicyHolder>(jsonString);
+        if (response.IsSuccessStatusCode)
+        {
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            policyHolder = JsonSerializer.Deserialize<PolicyHolder>(jsonString);
+        }
 
         return View(policyHolder);
     }
