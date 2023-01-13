@@ -1,4 +1,4 @@
-name: Build and deploy Web Api to an Azure Web App
+name: Build and Push iamges to an Azure Container Registry
 
 on:
   workflow_dispatch:
