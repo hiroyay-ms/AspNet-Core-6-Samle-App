@@ -1,4 +1,4 @@
-name: Deploy Api to App Service
+name: Build and deploy Web Api to an Azure Web App
 
 on:
   workflow_dispatch:
