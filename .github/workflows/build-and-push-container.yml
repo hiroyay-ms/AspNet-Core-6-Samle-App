@@ -14,7 +14,7 @@ on:
 
 env:
   API_PATH: './src/Api'
-  APP_PATH: './src/Web3'
+  APP_PATH: './src/Web1'
 
 jobs:
   build-api:
