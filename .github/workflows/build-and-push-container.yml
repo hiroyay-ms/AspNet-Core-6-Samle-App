@@ -2,6 +2,15 @@ name: Build and Push iamges to an Azure Container Registry
 
 on:
   workflow_dispatch:
+    inputs:
+      build-and-deploy-api:
+        description: Web Api のイメージを作成
+        type: boolean
+        default: true
+      build-and-deploy-mvc:
+        description: Mvc アプリのイメージを作成
+        type: boolean
+        default: true
 
 env:
   API_PATH: './src/Api'
@@ -9,6 +18,7 @@ env:
 
 jobs:
   build-api:
+    if: ${{ github.event.inputs.build-and-deploy-api == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +43,7 @@ jobs:
           path: ${{ env.API_PATH }}/myapi
 
   push-api:
+    if: ${{ github.event.inputs.build-and-deploy-api == 'true' }}
     runs-on: ubuntu-latest
     needs: build-api
 
@@ -58,6 +69,7 @@ jobs:
           docker push ${{ secrets.REGISTRY_LOGINSERVER }}/api:${{ github.sha }}    
 
   build-mvc:
+    if: ${{ github.event.inputs.build-and-deploy-mvc == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -82,6 +94,7 @@ jobs:
           path: ${{ env.APP_PATH }}/myapp
 
   push-mvc:
+    if: ${{ github.event.inputs.build-and-deploy-mvc == 'true' }}
     runs-on: ubuntu-latest
     needs: build-mvc
 
