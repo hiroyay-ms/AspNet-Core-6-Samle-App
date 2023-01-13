@@ -1,4 +1,4 @@
-name: Deploy Mvc App to App Service
+name: Build and deploy Mvc app to an Azure Web App
 
 on:
   workflow_dispatch:
