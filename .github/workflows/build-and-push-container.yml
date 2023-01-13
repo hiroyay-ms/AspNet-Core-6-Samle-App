@@ -116,5 +116,5 @@ jobs:
         
       - name: Docker build and push (MVC)
         run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGINSERVER }}/mvc:${{ github.sha }} -f ./.docker/Api/dockerfile
+          docker build . -t ${{ secrets.REGISTRY_LOGINSERVER }}/mvc:${{ github.sha }} -f ./.docker/Web/dockerfile
           docker push ${{ secrets.REGISTRY_LOGINSERVER }}/mvc:${{ github.sha }}    
