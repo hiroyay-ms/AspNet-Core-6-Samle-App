@@ -1,17 +1,17 @@
-name: Build and deploy Mvc app to an Azure Web App
+name: Build and deploy Web Api to an Azure Web App
 
 on:
   workflow_dispatch:
 
 env:
-  APP_PATH: './src/Web1'
+  APP_PATH: './src/Api'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-  
+
     steps:
-        - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Set up .NET Container
         uses: actions/setup-dotnet@v1
@@ -35,20 +35,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
 
-    environment:
-      name: Mvc-Production
-
     steps:
-    - name: Download artifact from build job
-      uses: actions/download-artifact@v2
-      with:
-        name: .net-app
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'app-tamasaba'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
-        package: .
+      - name: Download artifact from build jobs
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+      
+      - name: Deploy to Web app
+        id: deploy-to-webAppName
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'app-tosakin'
+          slot-name: 'Production'
+          package: .
+      
+      - name: logout
+        run: |
+          az logout
