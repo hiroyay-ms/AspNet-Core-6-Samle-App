@@ -44,8 +44,8 @@
         @foreach (var policyHolder in Model)
         {
             <tr>
-                <td><a href="~/People/GetPerson/@policyHolder.PersonId">@policyHolder.PersonName</a></td>
-                <td><a href="~/Policy/GetPolicy/@policyHolder.PolicyId">@policyHolder.PolicyName</a></td>
+                <td>@policyHolder.PersonName</td>
+                <td>@policyHolder.PolicyName</td>
                 <td>@policyHolder.PolicyNumber</td>
                 <td><input type="checkbox" id="Active" checked="@policyHolder.Active" disabled="disabled" /></td>
                 <td>@(((decimal)policyHolder.PolicyAmount).ToString("C2"))</td>
