@@ -4,9 +4,9 @@ using System.Net.Http;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
-using Web1.Models;
+using Web3.Models;
 
-namespace  Web1.Controllers;
+namespace  Web3.Controllers;
 
 public class PolicyHolderController : Controller
 {
