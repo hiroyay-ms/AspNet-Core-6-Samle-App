@@ -1,4 +1,4 @@
-name: Deploy Web App to new App Service
+name: Deploy Web App to new or existing App Service
 
 on:
   workflow_dispatch:
