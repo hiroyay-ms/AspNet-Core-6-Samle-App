@@ -21,7 +21,7 @@ env:
 
 jobs:
   add-resource:
-    if: ${{ github.event.inputs.deploy-new-resouce == 'true' }}
+    if: ${{ github.event.inputs.deploy-new-resource == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -64,7 +64,7 @@ jobs:
           path: ${{ env.APP_PATH }}/myapp
 
   deploy-to-new-resource:
-    if: ${{ github.event.inputs.deploy-new-resouce == 'true' }}
+    if: ${{ github.event.inputs.deploy-new-resource == 'true' }}
     runs-on: windows-latest
     needs: [add-resource, build]
 
@@ -91,7 +91,7 @@ jobs:
           az logout
 
   deploy:
-    if: ${{ github.event.inputs.deploy-new-resouce == 'false' }}
+    if: ${{ github.event.inputs.deploy-new-resource == 'false' }}
     runs-on: ubuntu-latest
     needs: build
 
