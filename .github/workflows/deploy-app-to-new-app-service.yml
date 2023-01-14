@@ -1,0 +1,118 @@
+name: Deploy Web App to new App Service
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy-new-resource:
+        description: '新しい App Servie を展開'
+        type: boolean
+        default: false
+      resourceGroup:
+        description: 'リソース グループ名'
+        required: true
+        type: string
+      serviceName:
+        description: 'アプリケーション名'
+        required: true
+        type: string
+
+env:
+  APP_PATH: './src/Web2'
+
+jobs:
+  add-resource:
+    if: ${{ github.event.inputs.deploy-new-resouce == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: ARM deploy
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ github.event.inputs.resourceGroup }}
+          template: ./templates/app-service.json
+          parameters: serviceName=${{ github.event.inputs.serviceName }}
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up .NET Container
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.0.x'
+          include-prerelease: true
+      
+      - name: Build with dotnet
+        run: dotnet build ${{ env.APP_PATH }} --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish ${{ env.APP_PATH }} -c Release -o ${{ env.APP_PATH }}/myapp
+
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v2
+        with:
+          name: .net-app
+          path: ${{ env.APP_PATH }}/myapp
+
+  deploy-to-new-resource:
+    if: ${{ github.event.inputs.deploy-new-resouce == 'true' }}
+    runs-on: windows-latest
+    needs: [add-resource, build]
+
+    steps:
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Download artifact from build jobs
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+
+      - name: Deploy to Web app
+        id: deploy-to-webAppName
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "app-${{ github.event.inputs.appService }}"
+          slot-name: "Production"
+          package: .
+
+      - name: logout
+        run: |
+          az logout
+
+  deploy:
+    if: ${{ github.event.inputs.deploy-new-resouce == 'false' }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Download artifact from build jobs
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+      
+      - name: Deploy to Web app
+        id: deploy-to-webAppName
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: '${{ github.event.inputs.serviceName }}'
+          slot-name: 'Production'
+          package: .
+      
+      - name: logout
+        run: |
+          az logout
